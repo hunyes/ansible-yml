@@ -1,0 +1,40 @@
+---
+- name: stop monit
+  command: service monit stop
+  become : true
+  when: role == 'test1' or role == 'test2'
+
+- name: stop tomcat
+  command: monit stop tomcat
+  become : true
+
+- name : wait until 10080 port is closed
+  wait_for:
+    port : 10080
+    delay : 5
+    state : stopped
+
+- name: move current version of tomcat to backup folder
+  command: sudo mv /tomcat/apache-tomcat /tomcat/apache-tomcat_backup
+
+- name: extract the archive
+  unarchive:
+    src: /files/apache-tomcat-7.0.90.tar.gz
+    dest: /tomcat
+    owner: user
+    group: usergroup
+
+- name: start tomcat
+  command: monit start tomcat
+  become: true
+
+- name: start monit
+  command: service monit start
+  become: true
+  when: role == 'test1' or role == 'test2'
+
+- name : check tomcat process
+  command : bash -c "ps -ef|grep -v grep |grep  tomcat"
+  register : tomcat
+
+- debug : var=tomcat.stdout

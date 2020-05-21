@@ -1,0 +1,34 @@
+---
+- name: Add the timestamp line to /etc/profile for .bash_history
+  hosts: tag_Env_DEV
+  gather_facts: false
+  become: yes
+  tasks:
+    - lineinfile:
+        dest: /etc/profile
+        line: '{{ item }}'
+      with_items:
+          - '# Add timestamp to .bash_history'
+          - 'HISTTIMEFORMAT="%F %T : "'
+          - 'export HISTTIMEFORMAT'
+
+
+
+---
+- hosts: localhost  #change Host group as par inventory
+  gather_facts: no
+  become: yes
+  vars:
+    test_server: "10.168.1.1"
+    test_server_name: "test-server"
+    file_dest: "/etc/test/test_agentd.conf"
+
+  - name: configuring test.conf
+    lineinfile:
+      dest: "{{ item.dest }}"
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+    with_items:
+      - { dest: '"{{ file_dest }}"', regexp: 'Server=', line: 'Server="{{test_server}}"' }
+      - { dest: '"{{ file_dest }}"', regexp: 'ServerActive=', line: 'ServerActive="{{test_server}}"' }
+      - { dest: '"{{ file_dest }}"', regexp: 'Hostname=', line: 'Hostname="{{test_server_name}}"' }

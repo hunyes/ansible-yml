@@ -1,0 +1,10 @@
+---
+- name: clean yum repolist cache
+  hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - name: yum clean
+      command: bash -c "yum clean all"
+    - name: yum makecache
+      command: bash -c "yum makecache fast"

@@ -33,3 +33,23 @@
     - name: ==> startup qle tomcat , path = {{ tomcat_path }}/bin/startup.sh
       shell: setsid /bin/sh -i -c "{{ tomcat_path }}/bin/startup.sh"
       #shell: setsid /bin/sh -i -c "{{ tomcat_path }}/tomcat.sh start"
+
+
+
+// restart_template.sh
+
+projectPathName="$1"
+projectPath="/home/www/$projectPathName"
+echo $projectPath
+echo $(ps aux | grep $projectPath/ | awk '{print $2}')
+kill $(ps aux | grep $projectPath/ | awk '{print $2}')
+echo "pause 3 second"
+sleep 3s
+cd $projectPath
+sh bin/shutdown.sh && sleep 8s && sh bin/startup.sh && tail -f logs/catalina.out
+
+
+// restart_xx_web.sh
+
+projectPathName="xxxx"
+sh restart_template.sh $projectPathName

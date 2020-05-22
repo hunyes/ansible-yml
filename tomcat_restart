@@ -2,7 +2,7 @@
   become: true
 
   vars:
-    tomcat_folder: tomcat
+    tomcat_folder: tomcat/bin
     tomcat_path: "/testspace/{{ tomcat_folder }}"
     grep_string: "[/]testspace/{{ tomcat_folder }}"
 

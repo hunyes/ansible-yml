@@ -5,6 +5,10 @@
   become: yes
   tasks:
     - name: yum clean
-      command: bash -c "yum clean all"
+      shell: yum clean all
+      args:
+        warn: false
     - name: yum makecache
-      command: bash -c "yum makecache fast"
+      shell: yum makecache fast
+      args:
+        warn: false

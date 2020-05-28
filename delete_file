@@ -1,0 +1,15 @@
+---
+  - hosts: all
+    tasks:
+    - name: delete file wildcard
+     find:
+      paths: /etc/wild_card/example
+      patterns: "^te.*.log"
+      use_regex: true
+     register: files_find
+
+    - name: Ansible remove file wildcard
+     file:
+      path: "{{ item.path }}"
+      state: absent
+     with_items: "{{ files_find.files }}"

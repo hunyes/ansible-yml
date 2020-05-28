@@ -1,0 +1,27 @@
+---
+- hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+    - name: 1. Test Ping
+      ping:
+      
+    - name: 2. Create User
+      user:
+        name: "{{ USER_NAME }}"
+        shell: /bin/bash
+       # local: yes
+        groups: wheel
+        password: "{{ PASSWORD | password_hash('sha512') }}"
+
+    - name: 3. Change Home Auth
+      command: chown -R "{{ USER_NAME }}".users /home/"{{ USER_NAME }}"
+      args:
+        warn: false
+
+    - name: 4. Check Home
+      command: ls -alh /home/
+      register: result
+    - debug:
+        msg: "{{ result }}"
+#     debug: var=result

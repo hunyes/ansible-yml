@@ -1,0 +1,15 @@
+---
+- hosts: all
+  remote_user: ansible
+  become: yes
+  tasks:
+    - name: 1. Test ping connection
+      ping:
+  
+    - name: 2. Delete User
+      user:
+        name: "{{ USER_NAME }}"
+        shell: /bin/bash
+        groups: wheel
+        state: absent
+        remove: yes

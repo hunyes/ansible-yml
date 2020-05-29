@@ -3,25 +3,31 @@
   remote_user: ansible
   become: yes
   tasks:
-    - name: 1. Test Ping
-      ping:
-      
-    - name: 2. Create User
+    - name: 1. Create User
       user:
         name: "{{ USER_NAME }}"
         shell: /bin/bash
        # local: yes
         groups: wheel
         password: "{{ PASSWORD | password_hash('sha512') }}"
+#    - name: sudoers.d 추가
+#      copy:
+#        content: |
+#          %{{USER_NAME}} ALL=(ALL) NOPASSWD: ALL
+#        dest: "/etc/sudoers.d/{{USER_NAME}}"
+#        owner: root
+#        group: root
+#        mode: 0440
+#        validate: "/usr/sbin/visudo -c -f '%s'"
 
-    - name: 3. Change Home Auth
+    - name: 2. Change Home Auth
       command: chown -R "{{ USER_NAME }}".users /home/"{{ USER_NAME }}"
       args:
         warn: false
 
-    - name: 4. Check Home
+    - name: 3. Check Home
       command: ls -alh /home/
       register: result
-    - debug:
-        msg: "{{ result }}"
-#     debug: var=result
+    - debug: var=result
+#    - debug:
+#        msg: "{{ result }}"

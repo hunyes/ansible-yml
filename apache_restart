@@ -1,0 +1,25 @@
+---
+- hosts: a01
+  become: true
+  
+  vars:
+    apache_folder: apache2/bin
+    apache_path: "/testspace/{{ apache_path }}"
+    grep_string: "[/]testspace/{{ apache_path }}"
+    
+  tasks:
+    - name: Restart Apache
+      shell: setsid /bin/sh -i -c "{{ apache_path }}/apachectl restart"
+      register: apache
+    - debug: var=apache.stdout
+
+    - name: Check Status
+      shell: ps aux | grep '{{ grep_string }}'  | awk '{print $2}'
+      ignore_errors: yes
+      changed_when: false
+      register: apache_status
+    - debug: msg="apache_status = {{ apache_status.stdout != ''}}"
+    
+  tags:
+    - a
+    - a01

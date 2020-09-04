@@ -16,6 +16,7 @@
 
     - name: check if tomcat is running
       shell: ps aux | grep '{{ grep_string }}' | awk '{print $2}'
+    # shell: pgrep -f '{{ grep_string }}'
       ignore_errors: yes
       changed_when: false
       register: tomcat_status
